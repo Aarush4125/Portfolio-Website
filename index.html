@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aarush Kukade - Interactive Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap');
+        body {
+            background-color: #111827;
+            font-family: 'Roboto Mono', monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 800px;
+            position: relative;
+            border-radius: 1rem;
+            box-shadow: 0 0 40px rgba(79, 70, 229, 0.4);
+            background: #1f2937;
+            border: 2px solid #374151;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #game-area {
+            flex-shrink: 0;
+            height: 180px;
+            position: relative;
+        }
+
+        #content-area {
+            flex-grow: 1;
+            position: relative;
+            padding: 0 30px 30px 30px;
+            min-height: 0;
+        }
+
+        #path {
+            position: absolute;
+            top: 100px;
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background-color: #374151;
+            border-radius: 2px;
+        }
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #a78bfa;
+            border-radius: 2px;
+            transition: width 1.2s cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        #player {
+            position: absolute;
+            top: 30px;
+            width: 80px;
+            height: 80px; 
+            background-image: url('warrior_idle.png');
+            background-size: cover;
+            transition: left 1.2s cubic-bezier(0.42, 0, 0.58, 1);
+            image-rendering: pixelated;
+            transform: translateX(-50%); 
+        }
+
+        #info-display {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+        .info-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #4f46e5 #1f2937;
+            border-radius: 0.5rem;
+            background-color: #1f2937;
+            padding: 1.5rem;
+        }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0.5rem;
+            padding: 2px;
+            background: linear-gradient(120deg, #a78bfa, #4f46e5);
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .info-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            transition-delay: 0.2s;
+        }
+        .instructions {
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="w-full h-full flex flex-col justify-center items-center p-4 md:p-8">
+        <div class="mb-6 text-center">
+            <p class="text-lg text-violet-400 mb-2" style="font-family: 'Press Start 2P', cursive;">PORTFOLIO</p>
+            <h1 class="text-2xl font-bold tracking-wider" style="font-family: 'Press Start 2P', cursive;">AARUSH KUKADE</h1>
+            <p class="mt-2 text-lg text-gray-400">The Developer's Path</p>
+            <p class="instructions mt-4 text-sm text-yellow-400">Use Left/Right Arrow Keys to Navigate</p>
+        </div>
+
+        <div class="game-container">
+            <div id="game-area">
+                <div id="path">
+                    <div id="progress-fill"></div>
+                </div>
+                <div id="player"></div>
+            </div>
+            <div id="content-area">
+                <div id="info-display">
+                    <!-- Cards will be injected here by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        const resumeData = [
+            { title: 'About Me', content: `` },
+            { title: 'Skills', content: `` },
+            { title: 'Projects', content: `` },
+            { title: 'Work Experience', content: `` },
+            { title: 'Education & Achievements', content: `` }
+        ];
+        // MODIFIED: Added Resume button and updated GitHub button style
+        resumeData[0].content = `<p class="text-lg">Aspiring software developer with a strong foundation in machine learning and data science.</p><p class="mt-2 text-gray-400">Passionate about problem-solving & continuous learning to contribute effectively to a dynamic team.</p><div class="mt-6 flex flex-wrap gap-4 justify-center"><a href="mailto:kukadeaarush@gmail.com" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">Email</a><a href="https://www.linkedin.com/in/aarushkukade4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">LinkedIn</a><a href="https://github.com/Aarush4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">GitHub</a><a href="Aarush_Resume.pdf" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">My Resume</a></div>`;
+        resumeData[1].content = `<ul class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm"><li><strong>Languages:</strong> Python, C++</li><li><strong>Technologies:</strong> Data Science, ML, AWS</li><li><strong>Libraries:</strong> Scikit-learn, Numpy, Pandas</li><li><strong>Framework:</strong> Flask</li><li><strong>Databases:</strong> SQL, MySQL</li><li><strong>Tools:</strong> Docker, Git, Postman</li></ul>`;
+        resumeData[2].content = `<div><h4 class="font-bold text-violet-400">PharmaPredict Web App</h4><p class="text-sm text-gray-400">ML-based app for disease prediction from symptoms. Features continuous retraining for accuracy improvement.</p></div><div class="mt-3"><h4 class="font-bold text-violet-400">2-Tier To-do Application</h4><p class="text-sm text-gray-400">Managed a Node.js app on AWS EC2 using Docker and automated the CI/CD pipeline with Jenkins.</p></div>`;
+        resumeData[3].content = `<h4 class="font-bold">Project Assistant</h4><p class="text-sm text-violet-400">TechInfoSync (Feb 2024 - May 2024)</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li>Created the core project framework in collaboration with the dev team and client.</li><li>Handled backend and data security for the 'Innocence Care' child monitoring app.</li></ul>`;
+        resumeData[4].content = `<p class="text-sm"><strong>B.E. ,Information Technology:</strong> Savitribai Phule Pune University</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li>Govt. of India Copyright for Labratory Equipment Identification System.</li><li>5-Star ratings in C++ & Python on HackerRank.</li><li>President of the Student Association of IT.</li></ul>`;
+
+        // --- Game Logic ---
+        const player = document.getElementById('player');
+        const path = document.getElementById('path');
+        const progressFill = document.getElementById('progress-fill');
+        const infoDisplay = document.getElementById('info-display');
+        
+        let currentNodeIndex = 0;
+        const nodePositions = [];
+        let isTransitioning = false;
+
+        let animationInterval;
+        let currentFrame = 0;
+        const FRAME_WIDTH = 80;
+        const animConfig = {
+            idle: { frames: 8, file: 'warrior_idle.png', speed: 150 },
+            run: { frames: 6, file: 'warrior_run.png', speed: 100 }
+        };
+
+        function playAnimation(animName) {
+            clearInterval(animationInterval);
+            const anim = animConfig[animName];
+            player.style.backgroundImage = `url('${anim.file}')`;
+            player.style.backgroundSize = `${FRAME_WIDTH * anim.frames}px 100%`;
+            currentFrame = 0;
+            animationInterval = setInterval(() => {
+                currentFrame = (currentFrame + 1) % anim.frames;
+                player.style.backgroundPosition = `-${currentFrame * FRAME_WIDTH}px 0`;
+            }, anim.speed);
+        }
+
+        function setupGame() {
+            const pathWidth = path.offsetWidth;
+            const nodeCount = resumeData.length;
+            const spacing = pathWidth / (nodeCount - 1);
+
+            nodePositions.length = 0;
+            infoDisplay.innerHTML = '';
+
+            for (let i = 0; i < nodeCount; i++) {
+                nodePositions.push(spacing * i);
+            }
+            
+            resumeData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.id = `card-${index}`;
+                card.classList.add('info-card');
+                card.innerHTML = `<h3 class="text-xl font-bold mb-3 text-violet-300" style="font-family: 'Press Start 2P', cursive; font-size: 1rem;">${data.title}</h3><div>${data.content}</div>`;
+                infoDisplay.appendChild(card);
+            });
+
+            playAnimation('idle');
+            updateGameState(true);
+        }
+
+        function updateGameState(isInitialLoad = false) {
+            const targetX = nodePositions[currentNodeIndex];
+            
+            player.style.left = `${path.offsetLeft + targetX}px`;
+            
+            const progressPercent = (currentNodeIndex / (nodePositions.length - 1)) * 100;
+            progressFill.style.width = `${progressPercent}%`;
+
+            document.querySelectorAll('.info-card').forEach((card, index) => {
+                card.classList.toggle('visible', index === currentNodeIndex);
+            });
+        }
+
+        function handleKeyDown(e) {
+            if (isTransitioning) return;
+            let moved = false;
+            let newIndex = currentNodeIndex;
+
+            if (e.key === 'ArrowRight') {
+                newIndex = Math.min(currentNodeIndex + 1, nodePositions.length - 1);
+                player.style.transform = 'translateX(-50%) scaleX(1)';
+                moved = newIndex !== currentNodeIndex;
+            } else if (e.key === 'ArrowLeft') {
+                newIndex = Math.max(currentNodeIndex - 1, 0);
+                player.style.transform = 'translateX(-50%) scaleX(-1)';
+                moved = newIndex !== currentNodeIndex;
+            }
+
+            if (moved) {
+                isTransitioning = true;
+                currentNodeIndex = newIndex;
+                playAnimation('run');
+                
+                document.querySelectorAll('.info-card').forEach(card => card.classList.remove('visible'));
+                
+                setTimeout(() => {
+                    updateGameState();
+                }, 10);
+
+                setTimeout(() => {
+                    playAnimation('idle');
+                    isTransitioning = false;
+                }, 1200);
+            }
+        }
+        
+        window.addEventListener('load', setupGame);
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('resize', setupGame);
+    </script>
+
+</body>
+</html>
+
+
