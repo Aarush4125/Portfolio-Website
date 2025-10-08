@@ -1,4 +1,5 @@
-Aarush Kukade - The Developer's Path 🚀
+**Aarush Kukade - The Developer's Path 🚀**
+
 Welcome to the source code for my interactive portfolio website! Instead of a traditional resume, I wanted to create a more engaging experience. This project presents my professional journey as a simple, gamified timeline that you can explore.
 
 Portfoilo Link: https://portfolio-website-five-xi-99.vercel.app
