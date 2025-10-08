@@ -16,6 +16,7 @@
             align-items: center;
             height: 100vh;
         }
+        /* --- DEFINITIVE FIX: Using Flexbox for a robust layout --- */
         .game-container {
             width: 100%;
             max-width: 1000px;
@@ -26,23 +27,24 @@
             background: #1f2937;
             border: 2px solid #374151;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: flex; /* Use Flexbox */
+            flex-direction: column; /* Stack children vertically */
         }
         
         #game-area {
-            flex-shrink: 0;
-            height: 180px;
-            position: relative;
+            flex-shrink: 0; /* Prevent this area from shrinking */
+            height: 180px;  /* Give it a fixed height */
+            position: relative; /* Parent for positioning player/path */
         }
 
         #content-area {
-            flex-grow: 1;
-            position: relative;
+            flex-grow: 1; /* Allow this area to fill all remaining vertical space */
+            position: relative; /* Parent for positioning info cards */
             padding: 0 30px 30px 30px;
-            min-height: 0;
+            min-height: 0; /* A flexbox hack to make overflow-y work correctly */
         }
 
+        /* Game elements are now positioned relative to #game-area */
         #path {
             position: absolute;
             top: 100px;
@@ -64,13 +66,14 @@
             top: 30px;
             width: 80px;
             height: 80px; 
-            background-image: url('warrior_idle.png');
+            background-image: url('assets/Warrior_Idle.png');
             background-size: cover;
             transition: left 1.2s cubic-bezier(0.42, 0, 0.58, 1);
             image-rendering: pixelated;
             transform: translateX(-50%); 
         }
 
+        /* Info-display is now relative to #content-area */
         #info-display {
             position: relative;
             height: 100%;
@@ -152,8 +155,7 @@
             { title: 'Work Experience', content: `` },
             { title: 'Education & Achievements', content: `` }
         ];
-        // MODIFIED: Added Resume button and updated GitHub button style
-        resumeData[0].content = `<p class="text-lg">Aspiring software developer with a strong foundation in machine learning and data science.</p><p class="mt-2 text-gray-400">Passionate about problem-solving & continuous learning to contribute effectively to a dynamic team.</p><div class="mt-6 flex flex-wrap gap-4 justify-center"><a href="mailto:kukadeaarush@gmail.com" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">Email</a><a href="https://www.linkedin.com/in/aarushkukade4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">LinkedIn</a><a href="https://github.com/Aarush4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">GitHub</a><a href="Aarush_Resume.pdf" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">My Resume</a></div>`;
+        resumeData[0].content = `<p class="text-lg">Aspiring software developer with a strong foundation in machine learning and data science.</p><p class="mt-2 text-gray-400">Passionate about problem-solving & continuous learning to contribute effectively to a dynamic team.</p><div class="mt-6 flex flex-wrap gap-4 justify-center"><a href="mailto:kukadeaarush@gmail.com" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">Email</a><a href="https://www.linkedin.com/in/aarushkukade4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">LinkedIn</a><a href="https://github.com/Aarush4125" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">GitHub</a><a href="assets/Aarush_Resume.pdf" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105 text-sm shadow-lg">My Resume</a></div>`;
         resumeData[1].content = `<ul class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm"><li><strong>Languages:</strong> Python, C++</li><li><strong>Technologies:</strong> Data Science, ML, AWS</li><li><strong>Libraries:</strong> Scikit-learn, Numpy, Pandas</li><li><strong>Framework:</strong> Flask</li><li><strong>Databases:</strong> SQL, MySQL</li><li><strong>Tools:</strong> Docker, Git, Postman</li></ul>`;
         resumeData[2].content = `<div><h4 class="font-bold text-violet-400">PharmaPredict Web App</h4><p class="text-sm text-gray-400">ML-based app for disease prediction from symptoms. Features continuous retraining for accuracy improvement.</p></div><div class="mt-3"><h4 class="font-bold text-violet-400">2-Tier To-do Application</h4><p class="text-sm text-gray-400">Managed a Node.js app on AWS EC2 using Docker and automated the CI/CD pipeline with Jenkins.</p></div>`;
         resumeData[3].content = `<h4 class="font-bold">Project Assistant</h4><p class="text-sm text-violet-400">TechInfoSync (Feb 2024 - May 2024)</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li>Created the core project framework in collaboration with the dev team and client.</li><li>Handled backend and data security for the 'Innocence Care' child monitoring app.</li></ul>`;
@@ -173,8 +175,8 @@
         let currentFrame = 0;
         const FRAME_WIDTH = 80;
         const animConfig = {
-            idle: { frames: 8, file: 'warrior_idle.png', speed: 150 },
-            run: { frames: 6, file: 'warrior_run.png', speed: 100 }
+            idle: { frames: 8, file: 'assets/Warrior_Idle.png', speed: 150 },
+            run: { frames: 6, file: 'assets/Warrior_Run.png', speed: 100 }
         };
 
         function playAnimation(animName) {
@@ -266,3 +268,4 @@
 
 </body>
 </html>
+
